@@ -4,8 +4,8 @@
 }
 
 .movie-image{
-    height: 40vh;
-    width: 50vh;
+    height: 20vh;
+    width: 10vw;
     object-fit: cover !important;
 
 }

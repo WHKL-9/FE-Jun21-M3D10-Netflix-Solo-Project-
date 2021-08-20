@@ -8,7 +8,7 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
 
-    <!-- font awesome css -->
+    <!-- fontawesome css -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
     <!-- own css -->
@@ -29,13 +29,11 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav d-flex w-100">
             <li class="nav-item ">
-              <a class="nav-link" href="#">Home</a>
+              <a class="nav-link" href="./homepage.html">Home</a>
             </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#">Categories</a>
-            </li>
+            
             <li class="nav-item active">
-                <a class="nav-link" href="#">Backoffice<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="./backoffice.html">Backoffice<span class="sr-only">(current)</span></a>
             </li>
 
             <!-- position these items to the right || ml-auto--> 
@@ -54,29 +52,44 @@
         </div>
     </nav>
 
+    
+
     <!-- create/edit movie -->
     <div class="container create-edit-container text-center mt-4">
         <div class="text-left">
-        <h5 class="form-title">New Movie</h5>
+        <h5 class="form-title text-white edit-or-create">New Movie</h5>
             <form id="movieForm" onsubmit = "handleSubmit(event)">
                 <div class="form-group w-50">
-                  <label for="movieName">Name</label>
+                  <label for="movieName" class="text-white">Name</label>
                   <input type="text" class="form-control" id="movieName" placeholder="Enter Movie Name" required>
                 </div>
                 <div class="form-group w-50">
-                  <label for="movieDescription">Description</label>
+                  <label for="movieDescription" class="text-white">Description</label>
                   <textarea type="text" class="form-control" id="movieDescription" placeholder="What is this movie about?" required></textarea>
                 </div>
                 <div class="form-group w-50">
-                    <label for="movieCategory">Category</label>
+                    <label for="movieCategory" class="text-white">Category</label>
                     <input type="text" class="form-control" id="movieCategory" required>
                 </div>
                 <div class="form-group w-50">
-                    <label for="movieUrl">Image URL</label>
+                    <label for="movieUrl" class="text-white">Image URL</label>
                     <input type="url" class="form-control" id="movieUrl" required>
                 </div>
 
-                <button type="submit" class="btn btn-primary">Submit</button>
+                <div class="d-flex flex-row w-50">
+                    <button type="submit" class="btn submitButton">
+                        <span>
+                          <!-- text to be created dynamically -->
+                        </span>
+
+                        <div class="spinner-border spinner-border-sm d-none" id="spinner" role="status">
+                          <span class="sr-only">Loading...</span>
+                        </div>
+                    </button>
+                    <button type="button" class="btn btn-danger deleteButton ml-auto d-none" onclick="handleDelete()">
+                      <i class="fas fa-trash-alt"></i>                    
+                    </button>
+                 </div>
               </form>
         </div>
     </div>
@@ -95,40 +108,153 @@
         // endpoint for our API
         const url = "https://striveschool-api.herokuapp.com/api/movies/"
 
-        const handleSubmit = async (event) => {
-            // important to prevent default browser behavior - auto refresh
-            event.preventDefault()
+        const movieId = new URLSearchParams(location.search).get("id")
 
-            //new Object to be uploaded
-            const newMovie = {
-                name: document.querySelector("#movieName").value,
-                description: document.querySelector("#movieDescription").value,
-                category: document.querySelector("#movieCategory").value,
-                imageUrl: document.querySelector("#movieUrl").value
-            }
+        console.log(movieId)
 
-            // console.log(newMovie) - tested: newMovie is working
+        // taking the movie ID 
+        const endpoint = movieId ? url + movieId : url 
 
-            //fetch newMovie into our array
-            try {
-                const response = await fetch (url,
-                {
-                    method: "POST",
-                    body: JSON.stringify(newMovie),
-                    headers:{
-                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA",
-                        "Content-Type": "application/json",
-                    }
-                })
+        //deciding for put or post 
+        const method = movieId ? "PUT" : "POST"
 
-                if(response.ok){
-                    const movieResponse = await response.json()
-                    alert(`Movie with ID${movieResponse._id} is successfully created`)
-                }
-            } catch (error) {
-                console.log(error)
+
+        //changing innerHTML of the button - depending if movie ID is available
+        const submitButton = document.querySelector ("button[type='submit']")
+
+        //loading spinner
+        const isLoading = (loading) => {
+            if(loading){
+              document.getElementById("spinner").classList.remove("d-none")
+            }else{
+              document.getElementById("spinner").classList.add("d-none")
             }
         }
+
+
+        //create or edit button - both under handle submit 
+        const handleSubmit = async (event) => {
+        // important to prevent default browser behavior - auto refresh
+        event.preventDefault()
+
+          //make loader invisible in the beginning for all situations
+          isLoading(true)
+
+        //new Object to be uploaded
+        const newMovie = {
+            name: document.querySelector("#movieName").value,
+            description: document.querySelector("#movieDescription").value,
+            category: document.querySelector("#movieCategory").value,
+            imageUrl: document.querySelector("#movieUrl").value
+        }
+
+        // console.log(newMovie) - tested: newMovie is working
+
+        //fetch newMovie into our array
+        try {
+            const response = await fetch (url,
+            {
+                method: method,
+                body: JSON.stringify(newMovie),
+                headers:{
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA",
+                    "Content-Type": "application/json",
+                }
+            })
+
+            if(response.ok){
+                const movieResponse = await response.json()
+                if(movieId){
+                  alert(`Movie with ID: ${movieResponse._id} was successfully edited`)
+                }else{
+                  alert(`Movie with ID${movieResponse._id} was successfully created`)
+                }
+            }
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+
+      //handle delete button 
+      const handleDelete = async () =>{
+        try {
+          const response = await fetch(endpoint,{
+            method: "DELETE",
+            headers: {
+            "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA"
+            }
+          })
+          if(response.ok){
+            const deletedObject = response.json()
+            alert(`Event with ID ${deletedObject._id} was deleted successfully`)
+            window.location.assign("./homepage.html")
+          }else{
+            alert(`Error: Event can't be deleted.`)
+          }
+        } catch (error) {
+          
+        }
+      }
+
+      //------//
+      window.onload = async () => {
+        try {
+          //to edit
+          if (movieId){
+            // title - edit 
+            document.querySelector(".edit-or-create").innerHTML = "Edit Movie Details"
+
+            //add colour to submit button
+            submitButton.classList.add("btn-primary")
+
+            //edit text in submit button - to edit 
+            submitButton.querySelector("span").innerText = "Edit Movie"
+
+            //making delete button visible (only in the case of editing)
+            document.querySelector(".deleteButton").classList.remove("d-none")
+
+            //fetching existed data in Input field from API
+            const response = await fetch(endpoint,{
+              method: "PUT",
+              headers: {
+                     "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA"
+                     }
+            })
+
+            const movieDetails = await response.json()
+
+            document.getElementById("movieName").value = movieDetails.name
+            document.getElementById("movieDescription").value = movieDetails.description
+            document.getElementById("movieCategory").value = movieDetails.category
+            document.getElementById("movieUrl").value = movieDetails.imageUrl
+
+
+          }else{
+          //to create 
+
+            // title - create 
+            document.querySelector(".edit-or-create").innerHTML = "Create New Movie"
+
+            //add colour to submit button
+            submitButton.classList.add("btn-success")
+
+            //edit text in submit button - to create
+            submitButton.querySelector("span").innerText = "Create Movie"
+
+          }
+        } catch (error) {
+          console.log(error)
+        }finally{
+          //hide spinner again
+          isLoading(false)
+        }
+      }
+
+
+   
+
+      
 
     </script>
   </body>

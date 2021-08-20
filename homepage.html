@@ -27,13 +27,10 @@
         <div class="collapse navbar-collapse" id="navbarNav">
           <ul class="navbar-nav d-flex w-100">
             <li class="nav-item ">
-              <a class="nav-link" href="#">Home</a>
+              <a class="nav-link active" href="./homepage.html">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#">Categories</a>
-            </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="#">Backoffice<span class="sr-only">(current)</span></a>
+                <a class="nav-link" href="./backoffice.html">Backoffice<span class="sr-only">(current)</span></a>
             </li>
 
             <!-- position these items to the right || ml-auto--> 
@@ -62,21 +59,10 @@
     </div>
 
 
-    <div class="allMoviesContainer">
+    <div class="allMoviesContainer m-5">
 
     </div>
-<!-- 
-    <div class="container movie-container Sci-Fi mb-2">
-        <h4 class="pl-0 ml-n2 text-white">Sci-Fi</h4>
-        <div class="row">
-        </div>
-    </div>
 
-    <div class="container movie-container Comedy m-5">
-        <h4 class="pl-0 text-white">Comedy</h4>
-        <div class="row">
-        </div>
-    </div> -->
 
     
    
@@ -135,7 +121,7 @@
             categories.forEach(category => {
                 getAllMoviesContainer.innerHTML += 
                 `<h6 class="text-white ml-5">${category}</h6>
-                <div class="row ${category}">
+                <div class="row ${category} ml-5 mb-3">
                    
                 </div>`
 
@@ -157,7 +143,8 @@
 
                 if (response.ok){
                     const allMovies = await response.json()
-                    return allMovies
+                    console.log(allMovies)
+                    displayMoviesInCategories(allMovies)
 
                 }
               } catch (error) {
@@ -172,16 +159,17 @@
         // fetch from their respective categories --- movies/category
         const displayMoviesInCategories = (movies) => {
             //target the categories the movies belong to || pre-added the classes in the step above
-            const movieContainer = document.querySelector(`.${movies.category}`)
+            const movieContainer = document.querySelector(`.${movies[0].category}`)
 
             movies.forEach(movie => {
                 movieContainer.innerHTML += 
-                `<div class="card col col-sm-6 col-md-4 col-lg-2 p-2 m-1 text-white">
+                `<div class="card col col-sm-6 col-md-4 col-lg-4 p-1 mr-3">
                      <img class="card-img-top movie-image w-100" src="${movie.imageUrl}" alt="movie image">
-                     <div class="card-body">
-                         <p class="card-title text-center">${movie.name}</p>
+                     <div class="card-body pt-1 p-0">
+                        <a href="./backoffice.html?id=${movie._id}"><p class="card-title text-center">${movie.name}</p>
+                        </a>                    
                      </div>
-                 </div>`
+                </div>`
             })
         }
 
@@ -198,9 +186,8 @@
 
                 displayMovieCategories(allMovieCategories)
 
-                const allMovies = await getAllMovies()
-
-                displayMoviesInCategories(allMovies)
+                getAllMovies() //get and display in each fetch 
+                
 
             } catch (error) {
                 console.log(error)
