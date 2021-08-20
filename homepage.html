@@ -65,7 +65,7 @@
     <div class="allMoviesContainer">
 
     </div>
-
+<!-- 
     <div class="container movie-container Sci-Fi mb-2">
         <h4 class="pl-0 ml-n2 text-white">Sci-Fi</h4>
         <div class="row">
@@ -76,12 +76,12 @@
         <h4 class="pl-0 text-white">Comedy</h4>
         <div class="row">
         </div>
-    </div>
+    </div> -->
 
+    
+   
 
-    <div class="row">
-
-    </div>
+    
         
     <!-- Bootstrap JS -->
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
@@ -89,9 +89,10 @@
 
     <!-- own JS -->
     <script>
-        //Sci-fi movies
-        const url = "https://striveschool-api.herokuapp.com/api/movies/" +"Sci-Fi"
+        //Sci-fi movies categories
+        const url = "https://striveschool-api.herokuapp.com/api/movies/"
 
+        
         // loader/spinner
         const isLoading = (loading) => {
             if(loading){
@@ -101,59 +102,87 @@
             }
         } 
 
-        //function to fetch movies from API
-        const getAllMovies = async () => {
+
+        //function to get movie categories
+        const getAllMovieCategories = async () => {
             try {
-                const response = await fetch(url, {
+                const response = await fetch(url,{
                     method:"GET",
-                    headers: {
-                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA"
+                    headers:{
+                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA"
                     }
                 })
 
-                const allMovies = await response.json()
 
-                return allMovies
+                const allCategories = await response.json()
 
-
+                return allCategories
             } catch (error) {
-                console.log(error)
+                
             }
         }
 
 
-        // function to display movies
-        const displayMovies = (movies) => {
+        const movieCategories = []
+        // function to display movie categories
+        const displayMovieCategories = (categories) => {
             //target all movie container
 
-            // const getAllMoviesContainer = document.querySelector(".allMoviesContainer")
-
-            // create categories dynamically 
-            // movies.forEach(movie => {
-            //     getAllMoviesContainer.innerHTML += 
-
-                
-                
-
-            // })
+            const getAllMoviesContainer = document.querySelector(".allMoviesContainer")
             
+            // create categories dynamically  - fetch from movie
 
-            
-
-            const getMovieContainer = document.querySelector(".Sci-Fi .row")
-            //add movies into the container
-            movies.forEach(movie => {
-                getMovieContainer.innerHTML  +=
-
-                `<div class="card col col-sm-6 col-md-4 col-lg-2 p-2 m-1">
-                    <img class="card-img-top movie-image w-100" src="${movie.imageUrl}" alt="movie image">
-                    <div class="card-body">
-                        <p class="card-title text-center">${movie.name}</p>
-                    </div>
+            categories.forEach(category => {
+                getAllMoviesContainer.innerHTML += 
+                `<h6 class="text-white ml-5">${category}</h6>
+                <div class="row ${category}">
+                   
                 </div>`
-                
-            });
 
+                movieCategories.push(category)
+            })
+        }
+
+
+        //function to fetch movies from API
+        const getAllMovies = ()  => {
+            movieCategories.forEach(async (movie)=>{
+              try {
+                const response = await fetch(url+movie, {
+                    method:"GET",
+                    headers: {
+                    "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA"
+                    }
+                }) 
+
+                if (response.ok){
+                    const allMovies = await response.json()
+                    return allMovies
+
+                }
+              } catch (error) {
+                  
+              }
+          })
+        }
+         
+
+       
+        //adding movies in their respective categories
+        // fetch from their respective categories --- movies/category
+        const displayMoviesInCategories = (movies) => {
+            //target the categories the movies belong to || pre-added the classes in the step above
+            const movieContainer = document.querySelector(`.${movies.category}`)
+
+            movies.forEach(movie => {
+                movieContainer.innerHTML += 
+                `<div class="card col col-sm-6 col-md-4 col-lg-2 p-2 m-1 text-white">
+                     <img class="card-img-top movie-image w-100" src="${movie.imageUrl}" alt="movie image">
+                     <div class="card-body">
+                         <p class="card-title text-center">${movie.name}</p>
+                     </div>
+                 </div>`
+            })
         }
 
 
@@ -165,9 +194,13 @@
                 //to show the spinner when fetching from API
                 isLoading(true)
 
+                const allMovieCategories = await getAllMovieCategories()
+
+                displayMovieCategories(allMovieCategories)
+
                 const allMovies = await getAllMovies()
 
-                displayMovies(allMovies)
+                displayMoviesInCategories(allMovies)
 
             } catch (error) {
                 console.log(error)
