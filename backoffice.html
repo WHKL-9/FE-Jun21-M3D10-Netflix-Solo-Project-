@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
+
+    <!-- font awesome css -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-1ycn6IcaQQ40/MKBW2W4Rhis/DbILU74C1vSrLJxCq57o941Ym01SwNsOMqvEBFlcgUa6xLiPY/NS5R+E6ztJQ==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- own css -->
+    <link rel="stylesheet" href="netflix.css">
+
+    <title>Backoffice</title>
+  </head>
+
+  <body>
+    <!-- Nav Bar section -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="#">
+            <img src="./assets/01_Netflix_Logo/01_Netflix_Logo_RGB/Netflix_Logo_RGB.png" alt="netflix-logo">
+        </a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+          <ul class="navbar-nav d-flex w-100">
+            <li class="nav-item ">
+              <a class="nav-link" href="#">Home</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Categories</a>
+            </li>
+            <li class="nav-item active">
+                <a class="nav-link" href="#">Backoffice<span class="sr-only">(current)</span></a>
+            </li>
+
+            <!-- position these items to the right || ml-auto--> 
+
+            <!-- search logo  -->
+            <li class="nav-item ml-auto">
+                <a class="nav-link" href="#"><i class="fas fa-search"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-bell"></i></a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="#"><i class="fas fa-user"></i></a>
+            </li>
+          </ul>
+        </div>
+    </nav>
+
+    <!-- create/edit movie -->
+    <div class="container create-edit-container text-center mt-4">
+        <div class="text-left">
+        <h5 class="form-title">New Movie</h5>
+            <form id="movieForm" onsubmit = "handleSubmit(event)">
+                <div class="form-group w-50">
+                  <label for="movieName">Name</label>
+                  <input type="text" class="form-control" id="movieName" placeholder="Enter Movie Name" required>
+                </div>
+                <div class="form-group w-50">
+                  <label for="movieDescription">Description</label>
+                  <textarea type="text" class="form-control" id="movieDescription" placeholder="What is this movie about?" required></textarea>
+                </div>
+                <div class="form-group w-50">
+                    <label for="movieCategory">Category</label>
+                    <input type="text" class="form-control" id="movieCategory" required>
+                </div>
+                <div class="form-group w-50">
+                    <label for="movieUrl">Image URL</label>
+                    <input type="url" class="form-control" id="movieUrl" required>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+        </div>
+    </div>
+
+    
+
+
+
+    <!-- bootstrap js-->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" crossorigin="anonymous"></script>
+
+    <!-- own JS -->
+    <script>
+
+        // endpoint for our API
+        const url = "https://striveschool-api.herokuapp.com/api/movies/"
+
+        const handleSubmit = async (event) => {
+            // important to prevent default browser behavior - auto refresh
+            event.preventDefault()
+
+            //new Object to be uploaded
+            const newMovie = {
+                name: document.querySelector("#movieName").value,
+                description: document.querySelector("#movieDescription").value,
+                category: document.querySelector("#movieCategory").value,
+                imageUrl: document.querySelector("#movieUrl").value
+            }
+
+            // console.log(newMovie) - tested: newMovie is working
+
+            //fetch newMovie into our array
+            try {
+                const response = await fetch (url,
+                {
+                    method: "POST",
+                    body: JSON.stringify(newMovie),
+                    headers:{
+                        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2MTFjZjE4YzJkNTI2MjAwMTViNmRjOTIiLCJpYXQiOjE2MjkyODY3OTYsImV4cCI6MTYzMDQ5NjM5Nn0.yAhu_c4q0lOI03taC9l2-tRr-g2fSMHLx3aDjJPmgoA",
+                        "Content-Type": "application/json",
+                    }
+                })
+
+                if(response.ok){
+                    const movieResponse = await response.json()
+                    alert(`Movie with ID${movieResponse._id} is successfully created`)
+                }
+            } catch (error) {
+                console.log(error)
+            }
+        }
+
+    </script>
+  </body>
+</html>

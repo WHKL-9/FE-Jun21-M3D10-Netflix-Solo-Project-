@@ -1,0 +1,16 @@
+.navbar-brand img{
+    width: 7rem;
+    height: 3rem;
+}
+
+.movie-image{
+    height: 40vh;
+    width: 50vh;
+    object-fit: cover !important;
+
+}
+
+body{
+    background: #141414;
+}
+
