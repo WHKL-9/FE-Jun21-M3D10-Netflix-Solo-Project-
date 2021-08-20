@@ -138,7 +138,7 @@
         event.preventDefault()
 
           //make loader invisible in the beginning for all situations
-          isLoading(true)
+        isLoading(true)
 
         //new Object to be uploaded
         const newMovie = {
@@ -151,8 +151,10 @@
         // console.log(newMovie) - tested: newMovie is working
 
         //fetch newMovie into our array
+
+        //put and put requires different endpoint 
         try {
-            const response = await fetch (url,
+            const response = await fetch (endpoint,
             {
                 method: method,
                 body: JSON.stringify(newMovie),
@@ -172,6 +174,8 @@
             }
         } catch (error) {
             console.log(error)
+        }finally{
+          isLoading(false)
         }
     }
 
