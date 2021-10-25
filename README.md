@@ -2,9 +2,9 @@
 
 Hey people, 7 weeks into Strive School's Frontend program, I was  challeneged to develop a netflix clone with some basic functionalities: 
 
-// Create a backoffice page for inserting, editing and removing movies
-//  Every movie will have a category
-// On the main page you should create, programmatically, a number of “lists” equal to the number of categories you have created
+- Create a backoffice page for inserting, editing and removing movies
+- Every movie will have a category
+- On the main page you should create, programmatically, a number of “lists” equal to the number of categories you have created
 
 Technologies used in this project: HTML, CSS, Bootstrap, JS
 
