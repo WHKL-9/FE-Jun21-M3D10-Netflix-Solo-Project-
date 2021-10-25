@@ -17,7 +17,7 @@ Navigation through the Project:
   -- a page where all your movies is shown by catogories
   -- if you click on any of the movie cards, you can go into the "edit page" for that particular movie to edit the info or delete the entire movie from backoffice
   
-  P/S: I have also added some loading indicator on the homepage to let user know their movies are being fetched 
+P/S: I have also added some loading indicator on the homepage to let user know their movies are being fetched 
 
 Up until this point, I have completed 50% of my journey on Strive School. Is it hard? Yes. Is it fulfilling? Most definitely! Before that, I see programmer as the one 
 performing all the cool magics. Now, I are learning more magic spells each day to perform more computational "magic" each day. Loving every sinlge bit of this journey!
