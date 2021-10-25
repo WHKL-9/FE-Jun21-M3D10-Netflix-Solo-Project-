@@ -13,7 +13,7 @@ Navigation through the Project:
   -- a page for you to enter your movies details (name, description, category and image URL) 
   -- successfully uploaded movie will be added to the homepage
   
--Homepage
+- Homepage
   -- a page where all your movies is shown by catogories
   -- if you click on any of the movie cards, you can go into the "edit page" for that particular movie to edit the info or delete the entire movie from backoffice
   
