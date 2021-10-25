@@ -1,15 +1,29 @@
-.navbar-brand img{
-    width: 7rem;
-    height: 3rem;
+.navbar-brand img {
+  width: 7rem;
+  height: 3rem;
 }
 
-.movie-image{
-    height: 20vh;
-    width: 10vw;
-    object-fit: cover !important;
-
+.movie-image {
+/* If you want an image to scale down if it has to, but never scale up to be larger than its original size, add the following:
+ */
+  max-width: 100%;
+  height: auto;
+  object-fit: cover !important;
+  height: 12rem;
 }
 
-body{
-    background: #141414;
+body {
+  background: #141414;
+}
+
+.movieCard {
+  background-color: transparent;
+  width: 6rem !important;
+  /* height: 4rem; */
+  margin-bottom: 2rem;
+}
+
+.movieLink{
+    text-decoration: none !important;
+    color: white;
 }
